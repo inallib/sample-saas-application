@@ -1,0 +1,51 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: YOUR_SERVICE
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: YOUR_SERVICE
+  template:
+    metadata:
+      labels:
+        io.kompose.service: YOUR_SERVICE
+    spec:
+      nodeSelector:
+        node-type: {{nodeSelector}}
+      containers:
+        - name: YOUR_SERVICE
+          image: 'YOUR_IMAGE'
+          ports:
+            - containerPort: 8761
+              protocol: TCP
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: '"-XX:MaxRAM=1624m"'
+            - name: TZ
+              value: Asia/Kolkata
+            - name: eureka.server.eviction-interval-timer-in-ms
+              value: '5000'
+            - name: server.port
+              value: '8761'
+          resources:
+            limits:
+              memory: 1624M
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      imagePullSecrets:
+        - name: doc-reg-cred
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

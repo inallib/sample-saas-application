@@ -1,0 +1,17 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: {{namespace-placeholder}}-minion
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.org/mergeable-ingress-type: minion
+spec:
+  rules:
+    - host: {{tenant-placeholder}}.yourdomain.com
+      http:
+        paths:
+          - path: /yourpath/
+            pathType: ImplementationSpecific
+            backend:
+              serviceName: yourservice
+              servicePort: 8080

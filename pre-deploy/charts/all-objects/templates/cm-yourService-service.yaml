@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: YOUR_SERVICE
+spec:
+  ports:
+    - name: '8761'
+      protocol: TCP
+      port: 8761
+      targetPort: 8761
+  selector:
+    io.kompose.service: YOUR_SERVICE
+  type: ClusterIP
+  sessionAffinity: None
